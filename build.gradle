@@ -29,6 +29,9 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('com.google.firebase:firebase-admin:5.3.0')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('mysql:mysql-connector-java')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
