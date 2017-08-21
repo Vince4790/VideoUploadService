@@ -37,6 +37,11 @@ public class Video {
     @JsonIgnore
     private Date lastModifiedDate;
 
+    public Video(){
+        this.createdDate = new Date();
+        this.lastModifiedDate = new Date();
+    }
+
     public Long getId() {
         return id;
     }

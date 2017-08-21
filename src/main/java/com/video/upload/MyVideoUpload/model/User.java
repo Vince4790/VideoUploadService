@@ -28,6 +28,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     @Length(min = 5, message = "*Your password must have at least 5 characters")
     @NotEmpty(message = "*Please provide your password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "created_date")
@@ -39,6 +40,18 @@ public class User implements UserDetails {
     @NotNull
     @JsonIgnore
     private Date lastModifiedDate;
+
+    public User(String username, String password){
+        this.username = username;
+        this.password = password;
+        this.createdDate = new Date();
+        this.lastModifiedDate = new Date();
+    }
+
+    public User(){
+        this.createdDate = new Date();
+        this.lastModifiedDate = new Date();
+    }
 
     public Long getId() {
         return id;

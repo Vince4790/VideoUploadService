@@ -5,6 +5,9 @@ import com.video.upload.MyVideoUpload.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.ValidationException;
+import java.util.Date;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -16,7 +19,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(User user) {
-        userRepository.save(user);
+    public User createNewUser(User user) throws ValidationException {
+        User existing = userRepository.findByUsername(user.getUsername());
+        if (existing != null){
+            throw new ValidationException("User name already exist!");
+        }
+
+        user.setCreatedDate(new Date());
+        user.setLastModifiedDate(new Date());
+        User created = userRepository.save(user);
+
+        return created;
     }
+
 }
