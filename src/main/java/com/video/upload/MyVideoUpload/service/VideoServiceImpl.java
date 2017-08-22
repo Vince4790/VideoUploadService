@@ -1,12 +1,8 @@
 package com.video.upload.MyVideoUpload.service;
 
-import com.google.common.collect.Lists;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.video.upload.MyVideoUpload.aws.AwsS3Connector;
 import com.video.upload.MyVideoUpload.model.User;
 import com.video.upload.MyVideoUpload.model.Video;
-import com.video.upload.MyVideoUpload.model.VideoRemoveRequest;
 import com.video.upload.MyVideoUpload.repository.VideoRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +13,6 @@ import org.springframework.web.server.ServerErrorException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +23,9 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private VideoRepository videoRepository;
 
+    @Autowired
+    private AwsS3Connector awsS3Connector;
+
     private User getCurrentUser(){
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
@@ -36,20 +34,6 @@ public class VideoServiceImpl implements VideoService {
     public List<Video> getVideosByCurrentUser() {
         User currentUser = getCurrentUser();
         return videoRepository.findByUserId(currentUser.getId());
-    }
-
-    @Override
-    public Video addVideoByCurrentUser() {
-        Video newVideo = new Video();
-        Date currentDate = new Date();
-        newVideo.setName("Video3");
-        newVideo.setCreatedDate(currentDate);
-        newVideo.setLastModifiedDate(currentDate);
-        newVideo.setUrl("http://test");
-        newVideo.setUserId(getCurrentUser().getId());
-        videoRepository.save(newVideo);
-
-        return newVideo;
     }
 
     @Override
@@ -122,7 +106,7 @@ public class VideoServiceImpl implements VideoService {
 
         System.out.println("start upload to S3");
 
-        String url = AwsS3Connector.pushVideoToS3Bucked(ofile);
+        String url = awsS3Connector.pushVideoToS3Bucked(ofile);
 
         System.out.println("done upload to S3");
         System.out.println("save to database");

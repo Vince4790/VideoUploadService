@@ -2,7 +2,6 @@ package com.video.upload.MyVideoUpload.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.video.upload.MyVideoUpload.aws.AwsS3Connector;
 import com.video.upload.MyVideoUpload.model.Video;
 import com.video.upload.MyVideoUpload.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -62,11 +60,4 @@ public class VideoController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @RequestMapping(value = "/aws/s3/video", method = RequestMethod.POST)
-//    public ResponseEntity<String> pushVideo() throws Exception {
-//        System.out.println("Start uploading to s3");
-//        String url = AwsS3Connector.pushVideoToS3Bucked();
-//
-//        return new ResponseEntity<>(url,HttpStatus.OK);
-//    }
 }
