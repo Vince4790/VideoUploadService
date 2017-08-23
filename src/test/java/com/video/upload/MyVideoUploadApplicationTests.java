@@ -1,4 +1,4 @@
-package com.video.upload.MyVideoUpload;
+package com.video.upload;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

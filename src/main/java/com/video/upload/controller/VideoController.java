@@ -1,9 +1,9 @@
-package com.video.upload.MyVideoUpload.controller;
+package com.video.upload.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.video.upload.MyVideoUpload.model.Video;
-import com.video.upload.MyVideoUpload.service.VideoService;
+import com.video.upload.model.Video;
+import com.video.upload.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class VideoController {
 
     @RequestMapping(value = "/api/video/upload", method = RequestMethod.POST)
     public ResponseEntity<Video> uploadNewVideo(@RequestParam String videoName, @RequestParam int chunks, @RequestParam String ext) throws Exception {
-        Video created = videoService.uploadNewVideo(videoName, chunks, ext);
+        Video created = videoService.mergeAndUploadNewVideo(videoName, chunks, ext);
 
         return new ResponseEntity<>(created, HttpStatus.OK);
     }

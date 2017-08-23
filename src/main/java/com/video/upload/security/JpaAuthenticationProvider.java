@@ -1,7 +1,7 @@
-package com.video.upload.MyVideoUpload.security;
+package com.video.upload.security;
 
-import com.video.upload.MyVideoUpload.model.User;
-import com.video.upload.MyVideoUpload.service.UserService;
+import com.video.upload.model.User;
+import com.video.upload.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

@@ -1,10 +1,8 @@
-package com.video.upload.MyVideoUpload.config;
+package com.video.upload.config;
 
 
-import com.video.upload.MyVideoUpload.security.JpaAuthenticationProvider;
-import com.video.upload.MyVideoUpload.service.UserService;
+import com.video.upload.security.JpaAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

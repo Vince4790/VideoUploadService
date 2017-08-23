@@ -1,6 +1,6 @@
-package com.video.upload.MyVideoUpload.repository;
+package com.video.upload.repository;
 
-import com.video.upload.MyVideoUpload.model.User;
+import com.video.upload.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

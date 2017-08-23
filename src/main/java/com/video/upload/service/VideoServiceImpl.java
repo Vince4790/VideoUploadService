@@ -1,9 +1,10 @@
-package com.video.upload.MyVideoUpload.service;
+package com.video.upload.service;
 
-import com.video.upload.MyVideoUpload.aws.AwsS3Connector;
-import com.video.upload.MyVideoUpload.model.User;
-import com.video.upload.MyVideoUpload.model.Video;
-import com.video.upload.MyVideoUpload.repository.VideoRepository;
+import com.video.upload.aws.AwsS3Connector;
+import com.video.upload.model.User;
+import com.video.upload.model.Video;
+import com.video.upload.repository.VideoRepository;
+import javassist.NotFoundException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +14,6 @@ import org.springframework.web.server.ServerErrorException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,15 +24,14 @@ public class VideoServiceImpl implements VideoService {
     private VideoRepository videoRepository;
 
     @Autowired
-    private AwsS3Connector awsS3Connector;
+    private UserService userService;
 
-    private User getCurrentUser(){
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
+    @Autowired
+    private AwsS3Connector awsS3Connector;
 
     @Override
     public List<Video> getVideosByCurrentUser() {
-        User currentUser = getCurrentUser();
+        User currentUser = userService.getCurrentUser();
         return videoRepository.findByUserId(currentUser.getId());
     }
 
@@ -47,7 +46,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public void deleteAllVideosByCurrentUser() {
-        Long userId = getCurrentUser().getId();
+        Long userId = userService.getCurrentUser().getId();
         videoRepository.deleteAllByUserId(userId);
     }
 
@@ -55,19 +54,20 @@ public class VideoServiceImpl implements VideoService {
     public void storeChunkTemporary(MultipartFile file, String name, String chunk, String checksum) throws IOException {
         FileOutputStream fos;
         File ofile = new File(name+"_part"+chunk);
+        fos = new FileOutputStream(ofile,false);
         byte[] fileBytes;
         try {
-            fos = new FileOutputStream(ofile, true);
             fileBytes = file.getBytes();
             String md5Hex = DigestUtils
                     .md5Hex(fileBytes).toUpperCase();
             System.out.println("Md5:"+ md5Hex);
             validateMD5Checksum(md5Hex, checksum);
             fos.write(fileBytes);
-            fos.flush();
-            fos.close();
         }catch (Exception exception){
             exception.printStackTrace();
+        } finally{
+            fos.flush();
+            fos.close();
         }
 
         System.out.println("completed stored chunk, md5");
@@ -80,25 +80,30 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public Video uploadNewVideo(String videoName, int chunks, String ext) throws Exception {
+    public Video mergeAndUploadNewVideo(String videoName, int chunks, String ext) throws Exception {
         FileOutputStream fos;
         File ofile = new File(videoName+"."+ext);
         fos = new FileOutputStream(ofile,true);
         byte[] fileBytes;
         for (int i=0;i<chunks;i++){
             File chunk = new File(videoName+"_part"+i);
+            if (!chunk.exists()){
+                fos.close();
+                ofile.delete();
+                throw new NotFoundException(String.format("Chunk %s not found", chunk.getName()));
+            }
             FileInputStream fin = new FileInputStream(chunk);
+
             try {
-                fos = new FileOutputStream(ofile, true);
                 fileBytes = new byte[(int)chunk.length()];
                 fin.read(fileBytes);
                 fos.write(fileBytes);
                 fos.flush();
-                fos.close();
-                fin.close();
             } catch (Exception exception) {
                 exception.printStackTrace();
             } finally{
+                fos.close();
+                fin.close();
                 chunk.delete();
             }
         }
@@ -112,7 +117,7 @@ public class VideoServiceImpl implements VideoService {
         ofile.delete();
         System.out.println("save to database");
         Video newVideo = new Video();
-        newVideo.setUserId(getCurrentUser().getId());
+        newVideo.setUserId(userService.getCurrentUser().getId());
         newVideo.setUrl(url);
         newVideo.setName(videoName);
 

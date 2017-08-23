@@ -1,4 +1,4 @@
-package com.video.upload.MyVideoUpload.model;
+package com.video.upload.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;

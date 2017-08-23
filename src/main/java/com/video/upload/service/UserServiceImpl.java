@@ -1,8 +1,9 @@
-package com.video.upload.MyVideoUpload.service;
+package com.video.upload.service;
 
-import com.video.upload.MyVideoUpload.model.User;
-import com.video.upload.MyVideoUpload.repository.UserRepository;
+import com.video.upload.model.User;
+import com.video.upload.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.ValidationException;
@@ -30,6 +31,11 @@ public class UserServiceImpl implements UserService {
         User created = userRepository.save(user);
 
         return created;
+    }
+
+    @Override
+    public User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

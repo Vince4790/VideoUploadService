@@ -1,6 +1,6 @@
-package com.video.upload.MyVideoUpload.controller;
+package com.video.upload.controller;
 
-import com.video.upload.MyVideoUpload.model.User;
+import com.video.upload.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;

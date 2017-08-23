@@ -1,13 +1,12 @@
-package com.video.upload.MyVideoUpload.aws;
+package com.video.upload.aws;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import com.video.upload.MyVideoUpload.model.AwsCredential;
-import com.video.upload.MyVideoUpload.repository.AwsCredentialRepository;
+import com.video.upload.model.AwsCredential;
+import com.video.upload.repository.AwsCredentialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

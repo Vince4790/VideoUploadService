@@ -1,6 +1,7 @@
-package com.video.upload.MyVideoUpload.service;
+package com.video.upload.service;
 
-import com.video.upload.MyVideoUpload.model.Video;
+import com.video.upload.model.User;
+import com.video.upload.model.Video;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ public interface VideoService {
 
     void storeChunkTemporary(MultipartFile file, String name, String chunk, String checksum) throws IOException;
 
-    Video uploadNewVideo(String videoName, int chunks, String ext) throws Exception;
+    Video mergeAndUploadNewVideo(String videoName, int chunks, String ext) throws Exception;
 
     String validateAllChunksUploaded(String name, int total);
 }

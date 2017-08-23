@@ -1,4 +1,4 @@
-package com.video.upload.MyVideoUpload.model;
+package com.video.upload.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
@@ -51,6 +51,10 @@ public class User implements UserDetails {
     public User(){
         this.createdDate = new Date();
         this.lastModifiedDate = new Date();
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
