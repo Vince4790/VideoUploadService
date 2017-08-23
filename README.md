@@ -1,37 +1,53 @@
-## Welcome to GitHub Pages
+## Installation Guide
 
-You can use the [editor on GitHub](https://github.com/Vince4790/VideoUploadService/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+This is a Java Spring Boot app run with MySQL as database server.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Prerequisite
+- Git installed
+- JDK 1.8 installed
+    http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+- MySQL server is up and running on localhost.
 
-### Markdown
+    To setup the connection to MySQL, open **application.properties** in this project and update accordingly
+    ```markdown
+    spring.datasource.url = jdbc:mysql://localhost:3306/videodb
+    spring.datasource.username = test_user
+    spring.datasource.password = pass1234
+    spring.datasource.testWhileIdle = true
+    spring.datasource.validationQuery = SELECT 1
+    ```
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
+### Step 1:
+Clone from github
 ```markdown
-Syntax highlighted code block
+git clone git@github.com:Vince4790/VideoUploadService.git
+```
+### Step 2:
+Set up local instance of MySQL server
 
-# Header 1
-## Header 2
-### Header 3
+Copy and run the script in **/db/update/initial_data_table_create.sql** to create schema and data tables
 
-- Bulleted
-- List
+Verify following tables exist in database: **user**, **video**, **aws_credential**
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+### Step 3:
+To build Spring Boot project:
+```markdown
+gradlew build clean
+```
+or
+```markdown
+gradlew build
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### Step 4:
+Configure host and port locally at **application.properties**:
+```markdown
+server.port= 8080
+server.address= localhost
+server.display-name = VideoService
+```
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Vince4790/VideoUploadService/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Run in local using:
+```markdown
+gradlew bootRun
+```

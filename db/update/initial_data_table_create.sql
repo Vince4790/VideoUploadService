@@ -1,3 +1,7 @@
+CREATE SCHEMA `videodb` DEFAULT CHARACTER SET utf8;
+
+use videodb;
+
 create table user(
     id bigint auto_increment primary key,
     user_name varchar(255) unique not null,
@@ -16,4 +20,12 @@ create table video(
 
     primary key (id),
     foreign key (user_id) REFERENCES user(id)
+);
+
+create table aws_credential(
+    id bigint auto_increment,
+    access_key_id varchar(255) not null,
+    secret_access_key varchar(255) not null,
+
+    primary key (id)
 );

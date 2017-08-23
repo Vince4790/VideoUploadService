@@ -107,8 +107,9 @@ public class VideoServiceImpl implements VideoService {
         System.out.println("start upload to S3");
 
         String url = awsS3Connector.pushVideoToS3Bucked(ofile);
-
         System.out.println("done upload to S3");
+        // delete temporary file in folder
+        ofile.delete();
         System.out.println("save to database");
         Video newVideo = new Video();
         newVideo.setUserId(getCurrentUser().getId());
