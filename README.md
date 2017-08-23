@@ -32,7 +32,7 @@ Verify following tables exist in database: **user**, **video**, **aws_credential
 **Note**: For aws credential, if you want to setup on your local, contact me to get my S3 credential or you can insert
 your access key id and your secret access key into **aws_credential** table then update the bucket and region using yours accordingly:
 ```java
-In AwsS3Connector, update accordingly if you want to use your own S3 bucket:
+In /src/main/java/comvideo.upload/AwsS3Connector.java, update accordingly if you want to use your own S3 bucket:
 
     private static final String BUCKET_NAME = "video-upload-vince";
     private static final String S3_REGION_ENDPOINT = "https://s3-ap-southeast-1.amazonaws.com/video-upload-vince";
