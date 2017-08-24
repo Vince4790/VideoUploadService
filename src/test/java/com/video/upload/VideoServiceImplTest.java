@@ -80,7 +80,7 @@ public class VideoServiceImplTest {
         String status = videoService.validateAllChunksUploaded("test", 1);
         assertEquals(status, FILE_UPLOAD_STATUS_INCOMPLETE);
 
-        File testFile = new File("test_part0");
+        File testFile = new File("/tmp/test.part0");
         FileOutputStream fos = new FileOutputStream(testFile,false);
         fos.flush();
         fos.close();
@@ -105,7 +105,7 @@ public class VideoServiceImplTest {
         when(userService.getCurrentUser()).thenReturn(mockUser);
         when(videoRepository.save(any(Video.class))). thenReturn(mockReturnedVideo);
 
-        File testFile = new File("test_video_part0");
+        File testFile = new File("/tmp/test_video.part0");
         FileOutputStream fos = new FileOutputStream(testFile,false);
         fos.flush();
         fos.close();
@@ -116,7 +116,7 @@ public class VideoServiceImplTest {
         assertEquals(returned.getName(), "test_video.mp4");
         assertEquals(returned.getUrl(), "http://test-url");
 
-        File fileShouldBeDeleted = new File("test_video.mp4");
+        File fileShouldBeDeleted = new File("/tmp/test_video.mp4");
         assertFalse(fileShouldBeDeleted.exists());
     }
 }
