@@ -53,7 +53,9 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public void storeChunkTemporary(MultipartFile file, String name, String chunk, String checksum) throws IOException {
         FileOutputStream fos;
-        File ofile = new File(name+"_part"+chunk);
+//        File ofile = File.createTempFile(name, "part"+chunk);
+        File ofile = new File("/tmp/"+name+".part"+chunk);
+        System.out.println("absolute path:"+ofile.getAbsolutePath());
         fos = new FileOutputStream(ofile,false);
         byte[] fileBytes;
         try {
@@ -82,11 +84,12 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public Video mergeAndUploadNewVideo(String videoName, int chunks, String ext) throws Exception {
         FileOutputStream fos;
-        File ofile = new File(videoName+"."+ext);
+        File ofile = new File("/tmp/"+videoName+"."+ext);
+        String tempDir = ofile.getAbsolutePath().substring(0, ofile.getAbsolutePath().lastIndexOf(File.separator));
         fos = new FileOutputStream(ofile,true);
         byte[] fileBytes;
         for (int i=0;i<chunks;i++){
-            File chunk = new File(videoName+"_part"+i);
+            File chunk = new File("/tmp/"+videoName+".part"+i);
             if (!chunk.exists()){
                 fos.close();
                 ofile.delete();
@@ -130,7 +133,7 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public String validateAllChunksUploaded(String name, int total) {
         for (int i=0;i<total;i++){
-            File check = new File(name+"_part"+i);
+            File check = new File("/tmp/"+name+".part"+i);
             if(!check.exists()) {
                 return FILE_UPLOAD_STATUS_INCOMPLETE;
             }
