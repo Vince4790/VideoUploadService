@@ -19,6 +19,8 @@ import java.util.List;
 public class VideoServiceImpl implements VideoService {
     private static final String FILE_UPLOAD_STATUS_INCOMPLETE = "Incomplete";
     private static final String FILE_UPLOAD_STATUS_COMPLETE = "Completed";
+    private static final String TMP_DIR = "";
+
     @Autowired
     private VideoRepository videoRepository;
 
@@ -53,7 +55,7 @@ public class VideoServiceImpl implements VideoService {
     public void storeChunkTemporary(MultipartFile file, String name, String chunk, String checksum) throws IOException {
         FileOutputStream fos;
         String trimmed = name.replace(" ","_");
-        File ofile = new File("/tmp/"+trimmed+".part"+chunk);
+        File ofile = new File(trimmed+".part"+chunk);
         System.out.println("absolute path:"+ofile.getAbsolutePath());
         fos = new FileOutputStream(ofile,false);
         byte[] fileBytes;
@@ -84,12 +86,12 @@ public class VideoServiceImpl implements VideoService {
     public Video mergeAndUploadNewVideo(String videoName, int chunks, String ext) throws Exception {
         FileOutputStream fos;
         String trimmed = videoName.replace(" ","_");
-        File ofile = new File("/tmp/"+trimmed+"."+ext);
+        File ofile = new File(trimmed+"."+ext);
 
         byte[] fileBytes;
         for (int i=0;i<chunks;i++){
             fos = new FileOutputStream(ofile,true);
-            File chunk = new File("/tmp/"+trimmed+".part"+i);
+            File chunk = new File(trimmed+".part"+i);
             if (!chunk.exists()){
                 fos.close();
                 ofile.delete();
@@ -134,7 +136,7 @@ public class VideoServiceImpl implements VideoService {
     public String validateAllChunksUploaded(String name, int total) {
         String trimmed = name.replace(" ","_");
         for (int i=0;i<total;i++){
-            File check = new File("/tmp/"+trimmed+".part"+i);
+            File check = new File(trimmed+".part"+i);
             if(!check.exists()) {
                 return FILE_UPLOAD_STATUS_INCOMPLETE;
             }
