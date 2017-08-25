@@ -7,7 +7,6 @@ import com.video.upload.repository.VideoRepository;
 import javassist.NotFoundException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ServerErrorException;
@@ -53,8 +52,8 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public void storeChunkTemporary(MultipartFile file, String name, String chunk, String checksum) throws IOException {
         FileOutputStream fos;
-//        File ofile = File.createTempFile(name, "part"+chunk);
-        File ofile = new File("/tmp/"+name+".part"+chunk);
+        String trimmed = name.replace(" ","_");
+        File ofile = new File("/tmp/"+trimmed+".part"+chunk);
         System.out.println("absolute path:"+ofile.getAbsolutePath());
         fos = new FileOutputStream(ofile,false);
         byte[] fileBytes;
@@ -84,12 +83,13 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public Video mergeAndUploadNewVideo(String videoName, int chunks, String ext) throws Exception {
         FileOutputStream fos;
-        File ofile = new File("/tmp/"+videoName+"."+ext);
-        String tempDir = ofile.getAbsolutePath().substring(0, ofile.getAbsolutePath().lastIndexOf(File.separator));
-        fos = new FileOutputStream(ofile,true);
+        String trimmed = videoName.replace(" ","_");
+        File ofile = new File("/tmp/"+trimmed+"."+ext);
+
         byte[] fileBytes;
         for (int i=0;i<chunks;i++){
-            File chunk = new File("/tmp/"+videoName+".part"+i);
+            fos = new FileOutputStream(ofile,true);
+            File chunk = new File("/tmp/"+trimmed+".part"+i);
             if (!chunk.exists()){
                 fos.close();
                 ofile.delete();
@@ -110,7 +110,7 @@ public class VideoServiceImpl implements VideoService {
                 chunk.delete();
             }
         }
-        System.out.println("completed merge file");
+        System.out.println("completed merge file:"+ofile.getName()+" size:"+ofile.length());
 
         System.out.println("start upload to S3");
 
@@ -132,8 +132,9 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public String validateAllChunksUploaded(String name, int total) {
+        String trimmed = name.replace(" ","_");
         for (int i=0;i<total;i++){
-            File check = new File("/tmp/"+name+".part"+i);
+            File check = new File("/tmp/"+trimmed+".part"+i);
             if(!check.exists()) {
                 return FILE_UPLOAD_STATUS_INCOMPLETE;
             }
