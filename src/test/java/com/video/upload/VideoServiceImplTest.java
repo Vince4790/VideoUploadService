@@ -30,6 +30,7 @@ public class VideoServiceImplTest {
 
     private static final String FILE_UPLOAD_STATUS_INCOMPLETE = "Incomplete";
     private static final String FILE_UPLOAD_STATUS_COMPLETE = "Completed";
+    private static final String TMP_DIR = System.getProperty("os.name").toLowerCase().contains("win") ? "": "/tmp/";
 
     @Mock
     private UserService userService;
@@ -80,7 +81,7 @@ public class VideoServiceImplTest {
         String status = videoService.validateAllChunksUploaded("test", 1);
         assertEquals(status, FILE_UPLOAD_STATUS_INCOMPLETE);
 
-        File testFile = new File("/tmp/test.part0");
+        File testFile = new File(TMP_DIR+"test.part0");
         FileOutputStream fos = new FileOutputStream(testFile,false);
         fos.flush();
         fos.close();
@@ -105,7 +106,7 @@ public class VideoServiceImplTest {
         when(userService.getCurrentUser()).thenReturn(mockUser);
         when(videoRepository.save(any(Video.class))). thenReturn(mockReturnedVideo);
 
-        File testFile = new File("/tmp/test_video.part0");
+        File testFile = new File(TMP_DIR+"test_video.part0");
         FileOutputStream fos = new FileOutputStream(testFile,false);
         fos.flush();
         fos.close();
