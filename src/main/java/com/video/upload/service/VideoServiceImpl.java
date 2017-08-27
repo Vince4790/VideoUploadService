@@ -106,6 +106,9 @@ public class VideoServiceImpl implements VideoService {
                 fos.flush();
             } catch (Exception exception) {
                 exception.printStackTrace();
+                // if exception happen, clean up all remaining chunks and the merged file itself
+                cleanupChunksIfMergeFailed(trimmed, chunks);
+                ofile.delete();
             } finally{
                 fos.close();
                 fin.close();
@@ -116,20 +119,36 @@ public class VideoServiceImpl implements VideoService {
 
         System.out.println("start upload to S3");
 
-        String url = awsS3Connector.pushVideoToS3Bucked(ofile);
-        System.out.println("done upload to S3");
-        // delete temporary file in folder
-        ofile.delete();
-        System.out.println("save to database");
-        Video newVideo = new Video();
-        newVideo.setUserId(userService.getCurrentUser().getId());
-        newVideo.setUrl(url);
-        newVideo.setName(videoName);
+        try {
+            String url = awsS3Connector.pushVideoToS3Bucked(ofile);
+            System.out.println("done upload to S3");
+            System.out.println("save to database");
+            Video newVideo = new Video();
+            newVideo.setUserId(userService.getCurrentUser().getId());
+            newVideo.setUrl(url);
+            newVideo.setName(videoName);
 
-        Video created = videoRepository.save(newVideo);
-        System.out.println("done save to database");
+            Video created = videoRepository.save(newVideo);
+            System.out.println("done save to database");
 
-        return created;
+            return created;
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            // delete temporary file in folder
+            ofile.delete();
+        }
+
+        return null;
+    }
+
+    private void cleanupChunksIfMergeFailed(String name, int total) {
+        for (int i=0;i<total;i++){
+            File chunk = new File(TMP_DIR+name+".part"+i);
+            if(chunk.exists()) {
+                chunk.delete();
+            }
+        }
     }
 
     @Override
